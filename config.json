@@ -1,0 +1,30 @@
+{
+  "database": {
+    "host": "111.37.195.111",
+    "port": 7011,
+    "database": "oge",
+    "username": "oge",
+    "password": "ypfamily608"
+  },
+  "tables": {
+    "vector_table": "vector_data",
+    "metadata_table": "vector_metadata"
+  },
+  "processing": {
+    "batch_size": 1000,
+    "encoding": "utf-8"
+  },
+  "logging": {
+    "level": "INFO",
+    "directory": "logs"
+  },
+  "supported_formats": [
+    "ESRI Shapefile",
+    "GeoJSON",
+    "KML",
+    "GML",
+    "CSV",
+    "GPKG",
+    "OpenFileGDB"
+  ]
+} 
