@@ -191,26 +191,7 @@ class VectorToPostGIS:
         """
         try:
             with self.engine.connect() as conn:
-                # 创建矢量数据表（如果不存在）
-                vector_table_sql = f"""
-                CREATE TABLE IF NOT EXISTS {vector_table} (
-                    id SERIAL PRIMARY KEY,
-                    geometry GEOMETRY(GEOMETRY, 4326),
-                    properties JSONB,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-                
-                -- 创建空间索引
-                CREATE INDEX IF NOT EXISTS idx_{vector_table}_geometry 
-                ON {vector_table} USING GIST (geometry);
-                
-                -- 创建JSONB索引
-                CREATE INDEX IF NOT EXISTS idx_{vector_table}_properties 
-                ON {vector_table} USING GIN (properties);
-                """
-                
-                # 创建元数据表（如果不存在）
+                # 先创建元数据表（如果不存在）
                 metadata_table_sql = f"""
                 CREATE TABLE IF NOT EXISTS {metadata_table} (
                     id SERIAL PRIMARY KEY,
@@ -232,8 +213,50 @@ class VectorToPostGIS:
                 );
                 """
                 
-                conn.execute(text(vector_table_sql))
+                # 创建矢量数据表（如果不存在）- 先不添加外键约束
+                vector_table_sql = f"""
+                CREATE TABLE IF NOT EXISTS {vector_table} (
+                    id SERIAL PRIMARY KEY,
+                    geometry GEOMETRY(GEOMETRY, 4326),
+                    properties JSONB,
+                    metadata_id INTEGER,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """
+                
+                # 执行表创建
                 conn.execute(text(metadata_table_sql))
+                conn.execute(text(vector_table_sql))
+                
+                # 添加外键约束（如果不存在）
+                try:
+                    fk_sql = f"""
+                    ALTER TABLE {vector_table} 
+                    ADD CONSTRAINT fk_{vector_table}_metadata_id 
+                    FOREIGN KEY (metadata_id) REFERENCES {metadata_table}(id);
+                    """
+                    conn.execute(text(fk_sql))
+                except Exception as e:
+                    # 如果外键已存在，忽略错误
+                    self.logger.info(f"外键约束可能已存在: {e}")
+                
+                # 创建索引
+                index_sql = f"""
+                -- 创建空间索引
+                CREATE INDEX IF NOT EXISTS idx_{vector_table}_geometry 
+                ON {vector_table} USING GIST (geometry);
+                
+                -- 创建JSONB索引
+                CREATE INDEX IF NOT EXISTS idx_{vector_table}_properties 
+                ON {vector_table} USING GIN (properties);
+                
+                -- 创建外键索引
+                CREATE INDEX IF NOT EXISTS idx_{vector_table}_metadata_id 
+                ON {vector_table} (metadata_id);
+                """
+                conn.execute(text(index_sql))
+                
                 conn.commit()
                 
             self.logger.info(f"数据表创建成功: {vector_table}, {metadata_table}")
@@ -353,14 +376,15 @@ class VectorToPostGIS:
                         
                         batch_data.append({
                             'geometry': geometry.wkt,
-                            'properties': json.dumps(properties, ensure_ascii=False)
+                            'properties': json.dumps(properties, ensure_ascii=False),
+                            'metadata_id': metadata_id
                         })
                     
                     # 批量插入
                     if batch_data:
                         insert_sql = f"""
-                        INSERT INTO {vector_table} (geometry, properties)
-                        VALUES (:geometry, :properties);
+                        INSERT INTO {vector_table} (geometry, properties, metadata_id)
+                        VALUES (:geometry, :properties, :metadata_id);
                         """
                         
                         conn.execute(text(insert_sql), batch_data)
