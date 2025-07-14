@@ -7,6 +7,7 @@
 import json
 import os
 import sys
+from sqlalchemy import text
 from vector_to_postgis import VectorToPostGIS
 
 
@@ -92,17 +93,17 @@ def main():
     try:
         with tool.engine.connect() as conn:
             # 检查矢量数据表
-            result = conn.execute(tool.engine.text(f"SELECT COUNT(*) FROM {vector_table}"))
+            result = conn.execute(text(f"SELECT COUNT(*) FROM {vector_table}"))
             vector_count = result.fetchone()[0]
             print(f"   矢量数据表记录数: {vector_count}")
             
             # 检查元数据表
-            result = conn.execute(tool.engine.text(f"SELECT COUNT(*) FROM {metadata_table}"))
+            result = conn.execute(text(f"SELECT COUNT(*) FROM {metadata_table}"))
             metadata_count = result.fetchone()[0]
             print(f"   元数据表记录数: {metadata_count}")
             
             # 显示元数据信息
-            result = conn.execute(tool.engine.text(f"SELECT file_name, feature_count, geometry_type FROM {metadata_table} ORDER BY import_time DESC LIMIT 1"))
+            result = conn.execute(text(f"SELECT file_name, feature_count, geometry_type FROM {metadata_table} ORDER BY import_time DESC LIMIT 1"))
             metadata = result.fetchone()
             if metadata:
                 print(f"   最新导入文件: {metadata[0]}")
