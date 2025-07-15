@@ -238,8 +238,11 @@ class VectorToPostGIS:
                     """
                     conn.execute(text(fk_sql))
                 except Exception as e:
-                    # 如果外键已存在，忽略错误
+                    # 如果外键已存在，忽略错误并回滚事务
                     self.logger.info(f"外键约束可能已存在: {e}")
+                    conn.rollback()
+                    # 重新开始事务
+                    conn.begin()
                 
                 # 创建索引
                 index_sql = f"""
