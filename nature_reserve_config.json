@@ -1,0 +1,22 @@
+{
+    "database": {
+        "host": "111.37.195.111",
+        "port": 7011,
+        "database": "oge",
+        "username": "oge",
+        "password": "ypfamily608"
+    },
+    "test_data": {
+        "gdb_file_path": "Data/自然保护地.gpkg",
+        "source_crs": "EPSG:4490",
+        "target_crs": "EPSG:4326",
+        "vector_table": "nature_reserve_data",
+        "metadata_table": "nature_reserve_metadata",
+        "encoding": "utf-8",
+        "batch_size": 1000
+    },
+    "logging": {
+        "log_level": "INFO",
+        "log_dir": "logs"
+    }
+} 

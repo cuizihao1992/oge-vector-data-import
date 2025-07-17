@@ -1,0 +1,22 @@
+{
+    "database": {
+        "host": "111.37.195.111",
+        "port": 7011,
+        "database": "oge",
+        "username": "oge",
+        "password": "ypfamily608"
+    },
+    "test_data": {
+        "gdb_file_path": "空间适配OGE数据资料.gdb",
+        "source_crs": "EPSG:4527",
+        "target_crs": "EPSG:4326",
+        "vector_table": "nature_reserve_data",
+        "metadata_table": "nature_reserve_metadata",
+        "encoding": "utf-8",
+        "batch_size": 1000
+    },
+    "logging": {
+        "log_level": "INFO",
+        "log_dir": "logs"
+    }
+} 

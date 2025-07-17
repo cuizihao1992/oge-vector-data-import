@@ -292,9 +292,11 @@ class VectorToPostGIS:
             
             # 获取属性字段信息
             properties_schema = {}
+            null_counts = {}
             for col in gdf.columns:
                 if col != 'geometry':
                     properties_schema[col] = str(gdf[col].dtype)
+                    null_counts[col] = int(gdf[col].isnull().sum())
                     
             metadata = {
                 'file_name': os.path.basename(file_path),
@@ -313,7 +315,7 @@ class VectorToPostGIS:
                 'additional_info': json.dumps({
                     'crs_info': str(gdf.crs),
                     'memory_usage': int(gdf.memory_usage(deep=True).sum()),
-                    'null_counts': gdf.isnull().sum().to_dict()
+                    'null_counts': null_counts
                 }, ensure_ascii=False)
             }
             
@@ -359,6 +361,11 @@ class VectorToPostGIS:
                 
                 self.logger.info(f"元数据插入成功，ID: {metadata_id}")
                 
+                # 记录属性字段统计信息
+                total_fields = len(gdf.columns) - 1  # 减去geometry列
+                self.logger.info(f"属性字段数量: {total_fields}")
+                self.logger.info(f"属性字段列表: {list(gdf.columns.drop('geometry'))}")
+                
                 # 批量插入矢量数据
                 total_features = len(gdf)
                 inserted_count = 0
@@ -373,13 +380,17 @@ class VectorToPostGIS:
                         geometry = row.geometry
                         properties = row.drop('geometry').to_dict()
                         
-                        # 处理NaN值
-                        properties = {k: v for k, v in properties.items() 
-                                    if pd.notna(v)}
+                        # 保留NaN值，但转换为None以便JSON序列化
+                        processed_properties = {}
+                        for k, v in properties.items():
+                            if pd.isna(v):
+                                processed_properties[k] = None
+                            else:
+                                processed_properties[k] = v
                         
                         batch_data.append({
                             'geometry': geometry.wkt,
-                            'properties': json.dumps(properties, ensure_ascii=False),
+                            'properties': json.dumps(processed_properties, ensure_ascii=False),
                             'metadata_id': metadata_id
                         })
                     
