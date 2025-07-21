@@ -33,7 +33,7 @@ def test_gdb_import():
     """测试GDB数据入库"""
     
     # 文件路径
-    gdb_file_path = "空间适配OGE数据资料.gdb"
+    gdb_file_path = "新建文件地理数据库.gdb"
     
     # 检查文件是否存在
     if not os.path.exists(gdb_file_path):

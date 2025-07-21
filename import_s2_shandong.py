@@ -33,7 +33,7 @@ def main():
     print(f"   用户名: {config['database']['username']}")
 
     # 2. 设置文件路径和参数
-    file_path = "s2_shandong.shp"
+    file_path = "JiNan分块.shp"
     if not os.path.exists(file_path):
         print(f"错误：文件 {file_path} 不存在")
         sys.exit(1)
@@ -46,8 +46,8 @@ def main():
     target_crs = "EPSG:4326"
 
     # 4. 设置表名
-    vector_table = "test_s2_shandong_data"
-    metadata_table = "test_s2_shandong_metadata"
+    vector_table = "test_12222_data2"
+    metadata_table = "test_12222_metadata"
     print(f"3. 设置参数:")
     print(f"   源坐标系: {source_crs}")
     print(f"   目标坐标系: {target_crs}")

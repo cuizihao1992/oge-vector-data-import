@@ -36,7 +36,7 @@ def main():
     print(f"   用户名: {config['database']['username']}")
     
     # 2. 设置文件路径和参数
-    file_path = "12222.geojson"
+    file_path = "122223.geojson"
     
     # 检查文件是否存在
     if not os.path.exists(file_path):

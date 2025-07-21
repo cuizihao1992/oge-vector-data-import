@@ -7,7 +7,7 @@
         "password": "ypfamily608"
     },
     "test_data": {
-        "gdb_file_path": "空间适配OGE数据资料.gdb",
+        "gdb_file_path": "新建文件地理数据库.gdb",
         "source_crs": "EPSG:4527",
         "target_crs": "EPSG:4326",
         "vector_table": "nature_reserve_data",

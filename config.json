@@ -7,8 +7,8 @@
     "password": "ypfamily608"
   },
   "tables": {
-    "vector_table": "vector_data",
-    "metadata_table": "vector_metadata"
+    "vector_table": "test_12222_data2",
+    "metadata_table": "test_12222_metadata"
   },
   "processing": {
     "batch_size": 1000,
