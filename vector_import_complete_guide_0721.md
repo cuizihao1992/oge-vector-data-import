@@ -216,13 +216,13 @@ oge_vec_roads_buildings_20240101_143022_a1b2c3
 
 | 几何类型 | PostGIS类型 | 说明 | 示例表名 |
 |----------|-------------|------|----------|
-| Point | geometry(POINT, 4326) | 点要素 | 20240101_143022_pois_a1b2c3 |
-| LineString | geometry(LINESTRING, 4326) | 线要素 | 20240101_143022_roads_a1b2c3 |
-| Polygon | geometry(POLYGON, 4326) | 面要素 | 20240101_143022_buildings_a1b2c3 |
-| MultiPoint | geometry(MULTIPOINT, 4326) | 多点要素 | 20240101_143022_points_a1b2c3 |
-| MultiLineString | geometry(MULTILINESTRING, 4326) | 多线要素 | 20240101_143022_lines_a1b2c3 |
-| MultiPolygon | geometry(MULTIPOLYGON, 4326) | 多面要素 | 20240101_143022_areas_a1b2c3 |
-| 混合类型 | geometry(GEOMETRY, 4326) | 支持所有几何类型 | 20240101_143022_mixed_a1b2c3 |
+| Point | geometry(POINT, 4326) | 点要素 | oge_vec_pois_20240101_143022_a1b2c3 |
+| LineString | geometry(LINESTRING, 4326) | 线要素 | oge_vec_roads_20240101_143022_a1b2c3 |
+| Polygon | geometry(POLYGON, 4326) | 面要素 | oge_vec_buildings_20240101_143022_a1b2c3 |
+| MultiPoint | geometry(MULTIPOINT, 4326) | 多点要素 | oge_vec_points_20240101_143022_a1b2c3 |
+| MultiLineString | geometry(MULTILINESTRING, 4326) | 多线要素 | oge_vec_lines_20240101_143022_a1b2c3 |
+| MultiPolygon | geometry(MULTIPOLYGON, 4326) | 多面要素 | oge_vec_areas_20240101_143022_a1b2c3 |
+| 混合类型 | geometry(GEOMETRY, 4326) | 支持所有几何类型 | oge_vec_mixed_20240101_143022_a1b2c3 |
 
 **坐标系说明：**
 - **默认情况**：统一转换为WGS84（EPSG:4326）坐标系
