@@ -1,4 +1,4 @@
-# 矢量数据入库完整指南
+# 矢量数据入库流程
 
 ## 1. 入库处理流程
 
@@ -476,7 +476,7 @@ geom geometry(POINT, 3857)
 |--------|----------|------|------|------|
 | id | SERIAL | PRIMARY KEY | 索引ID，自增主键 | 1, 2, 3... |
 | product_id | INTEGER | NOT NULL, FOREIGN KEY | 关联产品ID | 1, 2, 3... |
-| table_name | VARCHAR(255) | NOT NULL | 数据表名 | 20240101_143022_roads_a1b2c3 |
+| table_name | VARCHAR(255) | NOT NULL | 数据表名 | oge_vec_roads_20240101_143022_a1b2c3 |
 | layer_name | VARCHAR(100) | NULL | 图层名称 | buildings, roads, boundaries |
 | geometry_type | VARCHAR(50) | NOT NULL | 几何类型 | POINT, LINESTRING, POLYGON |
 | feature_count | INTEGER | NOT NULL | 要素数量 | 1000, 500, 100 |
@@ -501,7 +501,7 @@ geom geometry(POINT, 3857)
 
 ### 8.3 动态表详细设计
 
-#### 8.3.1 矢量数据表（{timestamp}_{filename}_{layer}_{uuid}）
+#### 8.3.1 矢量数据表（oge_vec_{layer}_{timestamp}_{uuid}）
 
 每个矢量数据表都包含以下基础字段：
 
@@ -516,13 +516,13 @@ geom geometry(POINT, 3857)
 
 | 几何类型 | PostGIS类型 | 说明 | 示例表名 |
 |----------|-------------|------|----------|
-| Point | geometry(POINT, 4326) | 点要素 | 20240101_143022_pois_a1b2c3 |
-| LineString | geometry(LINESTRING, 4326) | 线要素 | 20240101_143022_roads_a1b2c3 |
-| Polygon | geometry(POLYGON, 4326) | 面要素 | 20240101_143022_buildings_a1b2c3 |
-| MultiPoint | geometry(MULTIPOINT, 4326) | 多点要素 | 20240101_143022_points_a1b2c3 |
-| MultiLineString | geometry(MULTILINESTRING, 4326) | 多线要素 | 20240101_143022_lines_a1b2c3 |
-| MultiPolygon | geometry(MULTIPOLYGON, 4326) | 多面要素 | 20240101_143022_areas_a1b2c3 |
-| 混合类型 | geometry(GEOMETRY, 4326) | 支持所有几何类型 | 20240101_143022_mixed_a1b2c3 |
+| Point | geometry(POINT, 4326) | 点要素 | oge_vec_pois_20240101_143022_a1b2c3 |
+| LineString | geometry(LINESTRING, 4326) | 线要素 | oge_vec_roads_20240101_143022_a1b2c3 |
+| Polygon | geometry(POLYGON, 4326) | 面要素 | oge_vec_buildings_20240101_143022_a1b2c3 |
+| MultiPoint | geometry(MULTIPOINT, 4326) | 多点要素 | oge_vec_points_20240101_143022_a1b2c3 |
+| MultiLineString | geometry(MULTILINESTRING, 4326) | 多线要素 | oge_vec_lines_20240101_143022_a1b2c3 |
+| MultiPolygon | geometry(MULTIPOLYGON, 4326) | 多面要素 | oge_vec_areas_20240101_143022_a1b2c3 |
+| 混合类型 | geometry(GEOMETRY, 4326) | 支持所有几何类型 | oge_vec_mixed_20240101_143022_a1b2c3 |
 
 **属性字段映射表：**
 
@@ -543,6 +543,10 @@ geom geometry(POINT, 3857)
 | 关系类型 | 主表 | 主键 | 从表 | 外键 | 说明 |
 |----------|------|------|------|------|------|
 | 一对多 | oge_vector_product | id | oge_vector_layer | product_id | 一个产品可以有多个矢量数据表 |
-| 关联关系 | oge_vector_layer | id | 动态表 | 无外键 | 通过表名建立关联关系 |
+| 逻辑关联 | oge_vector_layer | id | 动态表 | 无外键 | 通过表名与oge_vector_layer.table_name进行逻辑关联 |
+
+**说明：**
+- 动态表与oge_vector_layer之间为逻辑关联关系，依赖表名一致性，无数据库外键约束。
+- 所有动态表的元数据和管理均通过oge_vector_layer表实现。
 
 
